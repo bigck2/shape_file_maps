@@ -86,6 +86,44 @@ my_map
 
 
 
+# Part 3 ------------------------------------------------------------------
+
+
+# Look in dir with Shapefiles downloaded from Census
+dir("Shapefiles 3")
+
+# Read in the shapefiles, specify a directory and filename (not extensions)
+collin <- readOGR(dsn = "Shapefiles 3", layer = "97000")
+
+# Get a summary of the shape data
+summary(collin)
+
+
+# Read in the downloaded Census Data
+dir("Home Value Data 3")
+data <- read_csv("Home Value Data 3/ACS_16_1YR_B25077_with_ann.csv")
+
+# Delete second header row, and convert to numeric data type
+data <- data[-1,]
+data <- data %>% 
+  mutate(HD01_VD01 = as.numeric(HD01_VD01))
+
+# Join the data to the spatial data
+spat_data <- merge(collin, data, by.x = "GEO_ID", by.y = "GEO.id" )
+
+
+# Making the maps
+tm_shape(spat_data) + tm_fill(col = "HD01_VD01")
+
+my_map <- tm_shape(spat_data) + tm_fill(col = "HD01_VD01")
+
+tmap_mode("view")
+
+my_map
+
+
+
+
 
 
 
